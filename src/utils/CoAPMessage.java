@@ -30,10 +30,27 @@ public abstract class CoAPMessage
     Client Error    4
     Server Error   5
      */
-    protected int codeClass = 0;
-    protected int codeSubfield = 0;
+    protected int codeClass;
+    protected int codeSubfield;
+
+    protected int messageId = 0;
 
     protected OptionsArray options;
 
     protected String payload = "";
+
+    public void setMessageId(int newId)
+    {
+        messageId = newId;
+    }
+
+    public void setType(int newType)
+    {
+        type = newType;
+    }
+
+    public int getCodeClass()
+    {
+        return codeClass;
+    }
 }

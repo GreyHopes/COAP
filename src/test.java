@@ -1,15 +1,10 @@
-import utils.options.*;
+import utils.*;
+import utils.responses.clientErrors.BadRequestResponse;
 
 public class test {
-
-    public static void test(CoAPOption option)
-    {
-        System.out.println(option.getClass());
-    }
-
     public static void main(String[] args)
     {
-        IfNoneMatch a = new IfNoneMatch();
-        test(a);
+        BadRequestResponse a = new BadRequestResponse();
+        System.out.println(a.getCodeClass());
     }
 }
