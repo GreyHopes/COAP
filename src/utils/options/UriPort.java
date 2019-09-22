@@ -13,8 +13,9 @@ public class UriPort extends CoAPOption
         this.maxSize = 2;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public UriPort(int port)
+    {
+        this();
+        value = String.valueOf(port);
     }
 }

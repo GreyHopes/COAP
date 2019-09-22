@@ -12,8 +12,8 @@ public class ProxyUri extends CoAPOption
         this.maxSize = 1034;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public ProxyUri(String s) {
+        this();
+        value = s;
     }
 }

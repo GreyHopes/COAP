@@ -14,8 +14,9 @@ public class MaxAge extends CoAPOption
         this.value = "60";
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public MaxAge(int age)
+    {
+        this();
+        value = String.valueOf(age);
     }
 }

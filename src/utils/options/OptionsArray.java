@@ -25,6 +25,16 @@ public class OptionsArray
         }
     }
 
+    public int size()
+    {
+        return options.size();
+    }
+
+    public boolean isEmpty()
+    {
+        return options.isEmpty();
+    }
+
     public void remove(CoAPOption option)
     {
         options.remove(option);
@@ -37,6 +47,8 @@ public class OptionsArray
 
     public String formatForMessage() throws OptionFormatingException
     {
+        sort();
+
         if(options.isEmpty())
         {
             return "";
@@ -50,6 +62,11 @@ public class OptionsArray
         }
 
         return output.toString();
+    }
+
+    public CoAPOption getLastOption()
+    {
+        return options.get(options.size()-1);
     }
 
     public void setAuthorizedClasses(List<Class> list)

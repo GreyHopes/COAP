@@ -13,8 +13,9 @@ public class Sizel extends CoAPOption
         this.maxSize = 4;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public Sizel(int sizel)
+    {
+        this();
+        value = String.valueOf(sizel);
     }
 }

@@ -13,8 +13,10 @@ public class LocationQuery extends CoAPOption
         this.maxSize = 255;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public LocationQuery(String s)
+    {
+        this();
+        value = s;
     }
+
 }

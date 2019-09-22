@@ -17,12 +17,17 @@ public abstract class CoAPOption
     protected int minSize = 0;
     protected int maxSize = 0;
 
-    protected String value ="";
+    protected String value = "";
 
     protected FormatterInterface formatter = null;
 
     String format(CoAPOption previous) throws OptionFormatingException
     {
+        if(value.length() < minSize || value.length() > maxSize)
+        {
+            throw new OptionFormatingException();
+        }
+
         int previousOptionNumber = previous == null ? number : previous.getOptionNumber();
         int delta = number - previousOptionNumber;
 
@@ -40,17 +45,9 @@ public abstract class CoAPOption
         }
         else
         {
-            toAdd = new StringBuilder(Integer.toBinaryString(delta));
+            String deltaBinString = String.format("%4s",Integer.toBinaryString(delta)).replace(' ', '0');
+            toAdd = new StringBuilder(deltaBinString);
             delta = -1;
-        }
-
-        //Adding extra 0s
-        if(toAdd.length() < 4)
-        {
-            for(int i = toAdd.length();i<4;i++)
-            {
-                toAdd.insert(0, "0");
-            }
         }
 
         output += toAdd.toString();
@@ -71,17 +68,9 @@ public abstract class CoAPOption
         }
         else
         {
+            String lengthBinString = String.format("%4s",Integer.toBinaryString(length)).replace(' ', '0');
             toAdd = new StringBuilder(Integer.toBinaryString(length));
             length = -1;
-        }
-
-        //Adding extra 0s
-        if(toAdd.length() < 4)
-        {
-            for(int i = toAdd.length();i<4;i++)
-            {
-                toAdd.insert(0, "0");
-            }
         }
 
         output += toAdd.toString();
@@ -90,16 +79,8 @@ public abstract class CoAPOption
 
         if(delta > 0)
         {
-            toAdd = new StringBuilder(Integer.toBinaryString(delta));
-
-            //Adding extra 0s
-            if(toAdd.length() < 8)
-            {
-                for(int i = toAdd.length();i<8;i++)
-                {
-                    toAdd.insert(0, "0");
-                }
-            }
+            String extraDeltaBinString = String.format("%8s",Integer.toBinaryString(delta)).replace(' ', '0');
+            toAdd = new StringBuilder(extraDeltaBinString);
 
             output += toAdd.toString();
         }
@@ -108,16 +89,8 @@ public abstract class CoAPOption
 
         if(length > 0)
         {
+            String extraLengthBinString = String.format("%8s",Integer.toBinaryString(length)).replace(' ', '0');
             toAdd = new StringBuilder(Integer.toBinaryString(length));
-
-            //Adding extra 0s
-            if(toAdd.length() < 8)
-            {
-                for(int i = toAdd.length();i<8;i++)
-                {
-                    toAdd.insert(0, "0");
-                }
-            }
 
             output += toAdd.toString();
         }
@@ -136,5 +109,8 @@ public abstract class CoAPOption
         return number;
     }
 
-    abstract void setValue(String value);
+    public void setValue(String newValue)
+    {
+        value = newValue;
+    };
 }

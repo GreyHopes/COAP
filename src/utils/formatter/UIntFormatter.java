@@ -5,8 +5,18 @@ public class UIntFormatter implements FormatterInterface{
     private static UIntFormatter instance = null;
 
     @Override
-    public String formatValue(String value) {
-        return null;
+    public String formatValue(String value)
+    {
+        int intValue = Integer.parseInt(value);
+
+        StringBuilder outputBuilder = new StringBuilder(Integer.toBinaryString(intValue));
+
+        while(outputBuilder.length() % 8 != 0)
+        {
+            outputBuilder.insert(0,"0");
+        }
+
+        return outputBuilder.toString();
     }
 
     public static UIntFormatter getInstance()

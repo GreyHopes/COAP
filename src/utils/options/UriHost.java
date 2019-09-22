@@ -13,8 +13,10 @@ public class UriHost extends CoAPOption
         this.maxSize = 255;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public UriHost(String s)
+    {
+        this();
+        value = s;
     }
+
 }

@@ -13,8 +13,9 @@ public class UriPath extends CoAPOption
         this.maxSize = 255;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public UriPath(String s)
+    {
+        this();
+        value = s;
     }
 }

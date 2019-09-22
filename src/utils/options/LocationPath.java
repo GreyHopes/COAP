@@ -13,8 +13,9 @@ public class LocationPath extends CoAPOption
         this.maxSize = 255;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public LocationPath(String s)
+    {
+        this();
+        value = s;
     }
 }

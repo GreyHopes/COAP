@@ -13,8 +13,9 @@ public class ContentFormat extends CoAPOption
         this.maxSize = 2;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public ContentFormat(String s)
+    {
+        this();
+        value = s;
     }
 }

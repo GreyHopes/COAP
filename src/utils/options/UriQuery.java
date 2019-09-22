@@ -13,8 +13,9 @@ public class UriQuery extends CoAPOption
         this.maxSize = 255;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public UriQuery(String s)
+    {
+        this();
+        value = s;
     }
 }

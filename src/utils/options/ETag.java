@@ -13,8 +13,9 @@ public class ETag extends CoAPOption
         this.maxSize = 8;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public ETag(String s)
+    {
+        this();
+        value = s;
     }
 }

@@ -13,8 +13,9 @@ public class Accept extends CoAPOption
         this.maxSize = 2;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public Accept(int accept)
+    {
+        this();
+        value = String.valueOf(accept);
     }
 }

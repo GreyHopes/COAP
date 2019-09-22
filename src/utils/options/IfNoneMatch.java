@@ -12,9 +12,4 @@ public class IfNoneMatch extends CoAPOption
         this.minSize = 0;
         this.maxSize = 0;
     }
-
-    @Override
-    public void setValue(String value) {
-
-    }
 }

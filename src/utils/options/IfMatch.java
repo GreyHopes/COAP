@@ -13,8 +13,10 @@ public class IfMatch extends CoAPOption
         this.maxSize = 8;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public IfMatch(String s)
+    {
+        this();
+        value = s;
     }
+
 }

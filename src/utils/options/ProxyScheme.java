@@ -12,8 +12,9 @@ public class ProxyScheme extends CoAPOption
         this.maxSize = 255;
     }
 
-    @Override
-    public void setValue(String value) {
-
+    public ProxyScheme(String s) {
+        this();
+        value = s;
     }
+
 }
