@@ -8,8 +8,10 @@ import utils.formatter.FormatterInterface;
 public abstract class CoAPOption
 {
     //Formatting codes
-    final int DELTA_MINUS_13 = 13;
-    final int LENGTH_MINUS_13 = 13;
+    public final static int DELTA_MINUS_13 = 13;
+    public final static int DELTA_MINUS_269 = 14;
+    public final static int LENGTH_MINUS_13 = 13;
+    public final static int LENGTH_MINUS_269 = 14;
 
     protected int number = 0;
     protected int length = 0;
@@ -28,7 +30,7 @@ public abstract class CoAPOption
             throw new OptionFormatingException();
         }
 
-        int previousOptionNumber = previous == null ? number : previous.getOptionNumber();
+        int previousOptionNumber = previous == null ? 0 : previous.getOptionNumber();
         int delta = number - previousOptionNumber;
 
         String output = "";
@@ -37,11 +39,18 @@ public abstract class CoAPOption
         //Calulating Delta
 
         //If delta cannot be on 4 bits
-        if(delta > 15)
+        int newDelta = 0;
+        if(delta > 268)
+        {
+            delta = delta - 269;
+            newDelta = DELTA_MINUS_269;
+            toAdd = new StringBuilder(Integer.toBinaryString(newDelta));
+        }
+        else if(delta > 12)
         {
             delta = delta - 13;
-
-            toAdd = new StringBuilder(Integer.toBinaryString(DELTA_MINUS_13));
+            newDelta = DELTA_MINUS_13;
+            toAdd = new StringBuilder(Integer.toBinaryString(newDelta));
         }
         else
         {
@@ -57,27 +66,43 @@ public abstract class CoAPOption
         //Formatted value length is always 8n bits
         String valueFormatted = formatter.formatValue(value);
 
-        int length = valueFormatted.length();
+        int length = valueFormatted.length()/8;
 
         //If length cannot be on 4 bits
-        if(length > 15)
+        int newLength = 0;
+        if(length > 268)
+        {
+            length = length - 269;
+            newLength = LENGTH_MINUS_269;
+            toAdd = new StringBuilder(Integer.toBinaryString(newLength));
+        }
+        else if(length > 12)
         {
             length = length - 13;
-
-            toAdd = new StringBuilder(Integer.toBinaryString(LENGTH_MINUS_13));
+            newLength = LENGTH_MINUS_13;
+            toAdd = new StringBuilder(Integer.toBinaryString(newLength));
         }
         else
         {
             String lengthBinString = String.format("%4s",Integer.toBinaryString(length)).replace(' ', '0');
-            toAdd = new StringBuilder(Integer.toBinaryString(length));
+
+            toAdd = new StringBuilder(lengthBinString);
             length = -1;
         }
+
+
 
         output += toAdd.toString();
 
         //Extra delta bits
+        if(newDelta == DELTA_MINUS_269)
+        {
+            String extraDeltaBinString = String.format("%16s",Integer.toBinaryString(delta)).replace(' ', '0');
+            toAdd = new StringBuilder(extraDeltaBinString);
+            output += toAdd.toString();
+        }
 
-        if(delta > 0)
+        if(newDelta == DELTA_MINUS_13)
         {
             String extraDeltaBinString = String.format("%8s",Integer.toBinaryString(delta)).replace(' ', '0');
             toAdd = new StringBuilder(extraDeltaBinString);
@@ -87,10 +112,18 @@ public abstract class CoAPOption
 
         //Extra length bits
 
-        if(length > 0)
+        if(newLength == LENGTH_MINUS_269)
+        {
+            String extraLengthBinString = String.format("%16s",Integer.toBinaryString(length)).replace(' ', '0');
+            toAdd = new StringBuilder(extraLengthBinString);
+
+            output += toAdd.toString();
+        }
+
+        if(newLength == DELTA_MINUS_13)
         {
             String extraLengthBinString = String.format("%8s",Integer.toBinaryString(length)).replace(' ', '0');
-            toAdd = new StringBuilder(Integer.toBinaryString(length));
+            toAdd = new StringBuilder(extraLengthBinString);
 
             output += toAdd.toString();
         }

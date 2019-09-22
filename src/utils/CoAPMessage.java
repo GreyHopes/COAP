@@ -1,9 +1,9 @@
 package utils;
 
-import utils.exceptions.MessageFormattingException;
-import utils.exceptions.OptionFormatingException;
+import utils.exceptions.*;
 import utils.options.CoAPOption;
 import utils.options.OptionsArray;
+import utils.options.OptionsRegistry;
 
 public abstract class CoAPMessage {
     //CoAP version number must be set to 01
@@ -43,6 +43,8 @@ public abstract class CoAPMessage {
 
     protected String payload = "";
 
+    public void setOptions(OptionsArray newArray){options = newArray;}
+
     public void setMessageId(int newId) {
         messageId = newId;
     }
@@ -55,13 +57,24 @@ public abstract class CoAPMessage {
         return codeClass;
     }
 
-    public static CoAPMessage parse(String binaryMessage) throws MessageFormattingException
-    {
-        try()
+    public void setTokenLength(int tokenLength) {
+        this.tokenLength = tokenLength;
+    }
+
+    public void setToken(int token) {
+        this.token = token;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    public static CoAPMessage parse(String binaryMessage) throws MessageFormattingException, MessageParsingException {
+        try
         {
             //Extract version
             String rawBinary = binaryMessage.substring(0,2);
-            if(rawBinary != "01")
+            if(!rawBinary.equals("01"))
             {
                 throw new MessageFormattingException("Incorect version");
             }
@@ -93,27 +106,118 @@ public abstract class CoAPMessage {
                 parsedToken = Integer.parseInt(binaryMessage.substring(32,index),2);
             }
 
+            CoAPMessage message = null;
+
+            try {
+                message = MessageRegistry.getInstance().generateMessageFromCode(parsedCodeClass,parsedCodeSubfield);
+            } catch (UnsupportedMessageClassException e) {
+                e.printStackTrace();
+                throw new MessageFormattingException("Unsupported message Class");
+            }
+
+            message.setMessageId(parsedMessageId);
+            message.setType(parsedType);
+            message.setToken(parsedToken);
+            message.setTokenLength(parsedTokenLength);
+
             OptionsArray parsedOptions = new OptionsArray();
 
             //Extracting options if any and not detecting the payload marker
             while(binaryMessage.length() > index && !binaryMessage.substring(index,index+4).equals("1111"))
             {
-                int parsedDelta = Integer.parseInt(binaryMessage.substring(index,index+4));
+                int parsedDelta = Integer.parseInt(binaryMessage.substring(index,index+4),2);
 
-                //Parsing option number with delta
+                if(parsedDelta > 14)
+                {
+                    throw new MessageFormattingException("Invalid delta");
+                }
+                index+=4;
+
+                //Parsing option length
+
+                int parsedOptionLength = Integer.parseInt(binaryMessage.substring(index,index+4),2);
+
+                if(parsedOptionLength > 14)
+                {
+                    throw new MessageFormattingException("Invalid length");
+                }
+                index+=4;
+
+                //Parsing extra delta bits
+                if(parsedDelta == CoAPOption.DELTA_MINUS_269)
+                {
+                    int parsedExtraDelta = Integer.parseInt(binaryMessage.substring(index,index+16),2);
+                    parsedDelta = parsedExtraDelta + 269;
+                    index+=16;
+                }
+
+                if(parsedDelta == CoAPOption.DELTA_MINUS_13)
+                {
+                    int parsedExtraDelta = Integer.parseInt(binaryMessage.substring(index,index+8),2);
+                    parsedDelta = parsedExtraDelta + 13;
+                    index+=8;
+                }
+
+                //Parsing option number with  complete delta
                 int parsedOptionNumber = 0;
 
                 if(parsedOptions.size() == 0)
                 {
                     parsedOptionNumber = parsedDelta;
                 }
-                else
+                else if (parsedDelta < 13)
                 {
                     parsedOptionNumber = parsedDelta + parsedOptions.getLastOption().getOptionNumber();
                 }
 
+                //Parsing extra length
+                if(parsedOptionLength == CoAPOption.LENGTH_MINUS_269)
+                {
+                    int parsedExtraOptionLength = Integer.parseInt(binaryMessage.substring(index,index+16),2);
+                    parsedOptionLength = parsedExtraOptionLength + 269;
+                    index+=16;
+                }
 
+                if(parsedOptionLength == CoAPOption.DELTA_MINUS_13)
+                {
+                    int parsedExtraOptionLength = Integer.parseInt(binaryMessage.substring(index,index+8),2);
+                    parsedOptionLength = parsedExtraOptionLength + 13;
+                    index+=8;
+                }
+
+                String value = binaryMessage.substring(index,index + 8 * parsedOptionLength);
+                index += index + 8 * parsedOptionLength;
+
+                CoAPOption newOption = null;
+
+                try
+                {
+                    newOption = OptionsRegistry.getInstance().generateOptionFromNumber(parsedOptionNumber);
+                } catch (UnsupportedOptionException e) {
+                    e.printStackTrace();
+                    throw new MessageFormattingException("Unsupported option");
+                } catch (MessageParsingException e) {
+                    throw e;
+                }
+
+                newOption.setValue(value);
+
+                parsedOptions.add(newOption);
             }
+
+            message.setOptions(parsedOptions);
+
+            String parsedPayload = "";
+            //Parsing payload if any
+            if(binaryMessage.length() > index+8 && !binaryMessage.substring(index,index+8).equals("11111111"))
+            {
+                index+=8;
+                parsedPayload = binaryMessage.substring(index);
+            }
+
+            message.setPayload(parsedPayload);
+
+            return message;
         }
         catch(IndexOutOfBoundsException e)
         {
