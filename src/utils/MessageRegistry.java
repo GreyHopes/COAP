@@ -2,12 +2,7 @@ package utils;
 
 import utils.exceptions.MessageParsingException;
 import utils.exceptions.UnsupportedMessageClassException;
-import utils.exceptions.UnsupportedOptionException;
-import utils.options.CoAPOption;
-import utils.requests.DELETERequest;
-import utils.requests.GETRequest;
-import utils.requests.POSTRequest;
-import utils.requests.PUTRequest;
+import utils.requests.*;
 import utils.responses.clientErrors.*;
 import utils.responses.serverErrors.*;
 import utils.responses.successes.*;

@@ -1,6 +1,7 @@
 package utils;
 
 import utils.exceptions.*;
+import utils.formatter.StringFormatter;
 import utils.options.CoAPOption;
 import utils.options.OptionsArray;
 import utils.options.OptionsRegistry;
@@ -9,8 +10,12 @@ public abstract class CoAPMessage {
     //CoAP version number must be set to 01
     private String version = "01";
 
-    private final String PAYLOAD_MARKER = "11111111";
+    private static final String PAYLOAD_MARKER = "11111111";
 
+    public static final int CONFIRMABLE = 0;
+    public static final int RESET = 3;
+    public static final int NON_CONFIRMABLE = 1;
+    public static final int ACKNOWLEDGMENT = 2;
     /*
     Message type
     Confirmable              0
@@ -20,12 +25,12 @@ public abstract class CoAPMessage {
 
     Default is 0
      */
-    protected int type = 0;
+    protected int type = CONFIRMABLE;
 
     //Length of the token field
     protected int tokenLength = 0;
 
-    protected int token = 0;
+    protected byte[] token = {};
     /*
     Message code composed of class c (3 bits 0-7) and subfield (5 bits 0-31) similar to HTTP
     Class :
@@ -57,16 +62,46 @@ public abstract class CoAPMessage {
         return codeClass;
     }
 
-    public void setTokenLength(int tokenLength) {
-        this.tokenLength = tokenLength;
-    }
-
-    public void setToken(int token) {
+    public void setToken(byte[] token) {
         this.token = token;
+        tokenLength = token.length;
     }
 
     public void setPayload(String payload) {
         this.payload = payload;
+    }
+
+    public boolean isConfirmable()
+    {
+        return type == CONFIRMABLE;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public int getTokenLength() {
+        return tokenLength;
+    }
+
+    public byte[] getToken() {
+        return token;
+    }
+
+    public int getCodeSubfield() {
+        return codeSubfield;
+    }
+
+    public int getMessageId() {
+        return messageId;
+    }
+
+    public OptionsArray getOptions() {
+        return options;
+    }
+
+    public String getPayload() {
+        return payload;
     }
 
     public static CoAPMessage parse(String binaryMessage) throws MessageFormattingException, MessageParsingException {
@@ -97,13 +132,13 @@ public abstract class CoAPMessage {
             int index = 32;
 
             //Extracting token if any
-            int parsedToken = 0;
+            byte[] parsedToken = {};
 
             if(parsedTokenLength > 0)
             {
                 index = index + 8 * parsedTokenLength;
 
-                parsedToken = Integer.parseInt(binaryMessage.substring(32,index),2);
+                parsedToken = BinaryUtils.binaryStringToBytes(binaryMessage.substring(32,index));
             }
 
             CoAPMessage message = null;
@@ -118,7 +153,6 @@ public abstract class CoAPMessage {
             message.setMessageId(parsedMessageId);
             message.setType(parsedType);
             message.setToken(parsedToken);
-            message.setTokenLength(parsedTokenLength);
 
             OptionsArray parsedOptions = new OptionsArray();
 
@@ -178,7 +212,7 @@ public abstract class CoAPMessage {
                     index+=16;
                 }
 
-                if(parsedOptionLength == CoAPOption.DELTA_MINUS_13)
+                if(parsedOptionLength == CoAPOption.LENGTH_MINUS_13)
                 {
                     int parsedExtraOptionLength = Integer.parseInt(binaryMessage.substring(index,index+8),2);
                     parsedOptionLength = parsedExtraOptionLength + 13;
@@ -186,7 +220,7 @@ public abstract class CoAPMessage {
                 }
 
                 String value = binaryMessage.substring(index,index + 8 * parsedOptionLength);
-                index += index + 8 * parsedOptionLength;
+                index += 8 * parsedOptionLength;
 
                 CoAPOption newOption = null;
 
@@ -200,6 +234,7 @@ public abstract class CoAPMessage {
                     throw e;
                 }
 
+                //TODO Reformatter la value
                 newOption.setValue(value);
 
                 parsedOptions.add(newOption);
@@ -207,13 +242,15 @@ public abstract class CoAPMessage {
 
             message.setOptions(parsedOptions);
 
-            String parsedPayload = "";
+            String parsedRawPayload = "";
             //Parsing payload if any
-            if(binaryMessage.length() > index+8 && !binaryMessage.substring(index,index+8).equals("11111111"))
+            if(binaryMessage.length() > index+8 && binaryMessage.substring(index,index+8).equals(PAYLOAD_MARKER))
             {
                 index+=8;
-                parsedPayload = binaryMessage.substring(index);
+                parsedRawPayload = binaryMessage.substring(index);
             }
+
+            String parsedPayload = BinaryUtils.binaryStringToString(parsedRawPayload);
 
             message.setPayload(parsedPayload);
 
@@ -292,9 +329,14 @@ public abstract class CoAPMessage {
 
         if(tokenLength > 0)
         {
-            //TODO Token sur 8n bits
+            StringBuilder tokenbuilder = new StringBuilder();
 
-            outputBuilder.append(Integer.toBinaryString(token));
+            for(byte tokenByte : token)
+            {
+                //Transforming byte into binary string
+                tokenbuilder.append(String.format("%8s",Integer.toBinaryString(tokenByte & 0xFF)).replace(' ', '0'));
+            }
+            outputBuilder.append(tokenbuilder.toString());
         }
 
         //Options if any
@@ -304,10 +346,14 @@ public abstract class CoAPMessage {
 
         if(payload.length() > 0)
         {
-            //TODO Payload ?
-
             outputBuilder.append(PAYLOAD_MARKER);
-            outputBuilder.append(payload);
+
+            //TODO
+            System.out.println("Payload");
+            System.out.println(payload);
+            System.out.println(StringFormatter.getInstance().formatValue(payload));
+
+            outputBuilder.append(StringFormatter.getInstance().formatValue(payload));
         }
 
         return outputBuilder.toString();
