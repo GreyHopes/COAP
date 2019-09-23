@@ -6,6 +6,7 @@ public abstract class SuccessResponse extends CoAPResponse
 {
     public SuccessResponse()
     {
+        super();
         codeClass = 2;
     }
 }

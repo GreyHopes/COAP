@@ -6,6 +6,7 @@ public abstract class CoAPResponse extends CoAPMessage
 {
     public CoAPResponse()
     {
+        super();
         type = ACKNOWLEDGMENT;
     }
 }

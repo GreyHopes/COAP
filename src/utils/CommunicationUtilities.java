@@ -30,12 +30,13 @@ public class CommunicationUtilities
             {
                 receivedBinaryStringBuilder.append(String.format("%8s",Integer.toBinaryString(bytesRead)).replace(' ', '0'));
             }
-        }while(bytesRead != -1);
+        }while(in.available() != 0);
 
         return receivedBinaryStringBuilder.toString();
     }
 
     public static CoAPMessage receiveMessage(InputStream in) throws IOException, MessageFormattingException, MessageParsingException {
+
         String receivedBinaryString = receiveBinaryString(in);
         return CoAPMessage.parse(receivedBinaryString);
     }

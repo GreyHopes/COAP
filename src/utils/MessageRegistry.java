@@ -31,7 +31,7 @@ public class MessageRegistry
         registry.put(0,tempRegistry);
 
         //Successes
-        tempRegistry.clear();
+        tempRegistry = new HashMap<>();
         tempRegistry.put(1, CreatedResponse.class);
         tempRegistry.put(2, DeletedResponse.class);
         tempRegistry.put(3, ValidResponse.class);
@@ -41,7 +41,7 @@ public class MessageRegistry
         registry.put(2,tempRegistry);
 
         //Client errors
-        tempRegistry.clear();
+        tempRegistry = new HashMap<>();
         tempRegistry.put(0, BadRequestResponse.class);
         tempRegistry.put(1, UnauthorizedResponse.class);
         tempRegistry.put(2, BadOptionResponse.class);
@@ -52,11 +52,12 @@ public class MessageRegistry
         tempRegistry.put(12, PreconditionFailedResponse.class);
         tempRegistry.put(13, RequestEntityTooLargeResponse.class);
         tempRegistry.put(15, UnsupportedContentFormatResponse.class);
+        tempRegistry.put(18, ImATeapotResponse.class);
 
         registry.put(4,tempRegistry);
 
         //Server Errors
-        tempRegistry.clear();
+        tempRegistry = new HashMap<>();
         tempRegistry.put(0, InternalServerErrorResponse.class);
         tempRegistry.put(1, NotImplementedResponse.class);
         tempRegistry.put(2, BadGatewayResponse.class);

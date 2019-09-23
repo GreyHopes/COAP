@@ -6,6 +6,7 @@ public abstract class ServerErrorResponse extends CoAPResponse
 {
     public ServerErrorResponse()
     {
+        super();
         codeClass = 5;
     }
 }

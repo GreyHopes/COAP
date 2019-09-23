@@ -6,6 +6,7 @@ public abstract class ClientErrorResponse extends CoAPResponse
 {
     public ClientErrorResponse()
     {
+        super();
         codeClass = 4;
     }
 }

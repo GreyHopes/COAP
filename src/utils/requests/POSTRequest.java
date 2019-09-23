@@ -6,8 +6,8 @@ public class POSTRequest extends CoAPRequest
 {
     public POSTRequest()
     {
+        super();
         codeSubfield = 2;
-
         options = new OptionsArray();
     }
 }

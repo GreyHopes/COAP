@@ -6,6 +6,7 @@ public abstract class CoAPRequest extends CoAPMessage
 {
      public CoAPRequest()
      {
+          super();
           codeClass = 0;
      }
 }

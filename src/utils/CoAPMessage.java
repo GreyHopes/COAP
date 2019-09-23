@@ -104,6 +104,11 @@ public abstract class CoAPMessage {
         return payload;
     }
 
+    public CoAPMessage()
+    {
+        options = new OptionsArray();
+    }
+
     public static CoAPMessage parse(String binaryMessage) throws MessageFormattingException, MessageParsingException {
         try
         {
@@ -347,12 +352,6 @@ public abstract class CoAPMessage {
         if(payload.length() > 0)
         {
             outputBuilder.append(PAYLOAD_MARKER);
-
-            //TODO
-            System.out.println("Payload");
-            System.out.println(payload);
-            System.out.println(StringFormatter.getInstance().formatValue(payload));
-
             outputBuilder.append(StringFormatter.getInstance().formatValue(payload));
         }
 

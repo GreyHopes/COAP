@@ -14,9 +14,14 @@ public class test {
         GETRequest test = new GETRequest();
 
         test.addOption(new UriPort(27));
+        test.setPayload("TEST");
+
 
         try {
-            CoAPMessage.parse(test.format());
+            String a = test.format();
+            System.out.println(a);
+            CoAPMessage b = CoAPMessage.parse(a);
+            System.out.println(b.getPayload());
         } catch (MessageFormattingException e) {
             e.printStackTrace();
         } catch (OptionFormatingException e) {
