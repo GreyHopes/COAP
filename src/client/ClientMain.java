@@ -5,6 +5,7 @@ import utils.CommunicationUtilities;
 import utils.exceptions.MessageFormattingException;
 import utils.exceptions.MessageParsingException;
 import utils.exceptions.OptionFormatingException;
+import utils.options.UriHost;
 import utils.options.UriPort;
 import utils.requests.GETRequest;
 
@@ -17,7 +18,7 @@ import java.net.UnknownHostException;
 
 public class ClientMain
 {
-    public static final String SERVER_ADRESS = "localhost";
+    public static final String SERVER_ADRESS = "192.168.0.185";
     public static final int SERVER_PORT = 5683;
 
     public static void main(String[] args)
@@ -27,17 +28,18 @@ public class ClientMain
             Socket socket = new Socket(serverAdress,SERVER_PORT);
             InputStream in = socket.getInputStream();
             OutputStream out = socket.getOutputStream();
+
             GETRequest test = new GETRequest();
-            test.addOption(new UriPort(27));
+            test.addOption(new UriHost(SERVER_ADRESS));
+            test.addOption(new UriPort(SERVER_PORT));
             test.setPayload("TEST");
 
-            System.out.println("To Send");
-            System.out.println(test.format());
             CommunicationUtilities.sendMessage(out,test);
             CoAPMessage response = CommunicationUtilities.receiveMessage(in);
             System.out.println("Received");
             System.out.println(response.getPayload());
 
+            socket.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {

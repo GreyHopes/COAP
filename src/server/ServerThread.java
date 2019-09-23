@@ -49,6 +49,7 @@ public class ServerThread extends Thread
                 CoAPResponse response = (CoAPResponse)requestHandlers.get(requestReceived.getClass()).invoke(this,requestReceived);
                 CommunicationUtilities.sendMessage(out,response);
                 System.out.println("Job's done");
+                clientSocket.close();
             }
             else
             {
