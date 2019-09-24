@@ -1,6 +1,7 @@
 package utils.formatter;
 
-public class UIntFormatter implements FormatterInterface{
+public class UIntFormatter implements FormatterInterface
+{
 
     private static UIntFormatter instance = null;
 
@@ -27,5 +28,10 @@ public class UIntFormatter implements FormatterInterface{
         }
 
         return instance;
+    }
+
+    @Override
+    public String parseValue(String rawBinary) {
+        return String.valueOf(Integer.parseInt(rawBinary,2));
     }
 }

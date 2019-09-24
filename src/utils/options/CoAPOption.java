@@ -25,7 +25,7 @@ public abstract class CoAPOption
 
     String format(CoAPOption previous) throws OptionFormatingException
     {
-        if(value.length() < minSize || value.length() > maxSize)
+        if(formatter.formatValue(value).length()/8 < minSize || formatter.formatValue(value).length()/8> maxSize)
         {
             throw new OptionFormatingException();
         }
@@ -146,4 +146,48 @@ public abstract class CoAPOption
     {
         value = newValue;
     };
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+    public int getMinSize() {
+        return minSize;
+    }
+
+    public void setMinSize(int minSize) {
+        this.minSize = minSize;
+    }
+
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    public void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public FormatterInterface getFormatter() {
+        return formatter;
+    }
+
+    public void setFormatter(FormatterInterface formatter) {
+        this.formatter = formatter;
+    }
 }

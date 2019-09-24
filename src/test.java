@@ -16,18 +16,6 @@ public class test {
         test.addOption(new UriPort(27));
         test.setPayload("TEST");
 
-
-        try {
-            String a = test.format();
-            System.out.println(a);
-            CoAPMessage b = CoAPMessage.parse(a);
-            System.out.println(b.getPayload());
-        } catch (MessageFormattingException e) {
-            e.printStackTrace();
-        } catch (OptionFormatingException e) {
-            e.printStackTrace();
-        } catch (MessageParsingException e) {
-            e.printStackTrace();
-        }
+        System.out.println(test.toString());
     }
 }

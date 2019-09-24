@@ -224,7 +224,7 @@ public abstract class CoAPMessage {
                     index+=8;
                 }
 
-                String value = binaryMessage.substring(index,index + 8 * parsedOptionLength);
+                String parsedValue = binaryMessage.substring(index,index + 8 * parsedOptionLength);
                 index += 8 * parsedOptionLength;
 
                 CoAPOption newOption = null;
@@ -239,8 +239,7 @@ public abstract class CoAPMessage {
                     throw e;
                 }
 
-                //TODO Reformatter la value
-                newOption.setValue(value);
+                newOption.setValue(newOption.getFormatter().parseValue(parsedValue));
 
                 parsedOptions.add(newOption);
             }
@@ -356,5 +355,16 @@ public abstract class CoAPMessage {
         }
 
         return outputBuilder.toString();
+    }
+
+    public String toString()
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getClass()).append(" ");
+        stringBuilder.append(" Options : ").append(" ").append(options.toString());
+        stringBuilder.append(" Token : ").append(" ").append(BinaryUtils.bytesToString(token));
+        stringBuilder.append(" Message ID").append(" ").append(messageId);
+        stringBuilder.append(" Payload ").append(" ").append(payload);
+        return stringBuilder.toString();
     }
 }

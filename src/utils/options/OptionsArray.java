@@ -64,6 +64,31 @@ public class OptionsArray
         return output.toString();
     }
 
+    public boolean containsOneOfClass(Class search)
+    {
+        for(CoAPOption option : options)
+        {
+            if(option.getClass().equals(search))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public CoAPOption getOneOfClass(Class search)
+    {
+        for(CoAPOption option : options)
+        {
+            if(option.getClass().equals(search))
+            {
+                return option;
+            }
+        }
+        return null;
+    }
+
     public CoAPOption getLastOption()
     {
         return options.get(options.size()-1);
@@ -72,5 +97,18 @@ public class OptionsArray
     public void setAuthorizedClasses(List<Class> list)
     {
         authorizedClasses = list;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("{").append(" ");
+        for(CoAPOption option : options)
+        {
+            stringBuilder.append(option.getClass()).append(" : ").append(option.getValue()).append(",");
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length() -1).append("}");
+        return stringBuilder.toString();
     }
 }

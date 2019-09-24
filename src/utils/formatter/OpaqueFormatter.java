@@ -1,5 +1,7 @@
 package utils.formatter;
 
+import utils.BinaryUtils;
+
 import java.nio.charset.StandardCharsets;
 
 //Opaque format acording to RFC 2608
@@ -30,5 +32,11 @@ public class OpaqueFormatter implements FormatterInterface{
         }
 
         return instance;
+    }
+
+    @Override
+    public String parseValue(String rawBinary) {
+        String rawBinaryWithoutHeader = rawBinary.substring(8);
+        return BinaryUtils.binaryStringToString(rawBinaryWithoutHeader);
     }
 }

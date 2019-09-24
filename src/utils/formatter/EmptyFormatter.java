@@ -18,4 +18,10 @@ public class EmptyFormatter implements FormatterInterface
 
         return instance;
     }
+
+    @Override
+    public String parseValue(String rawBinary)
+    {
+        return "";
+    }
 }

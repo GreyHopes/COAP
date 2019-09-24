@@ -1,5 +1,7 @@
 package utils.formatter;
 
+import utils.BinaryUtils;
+
 import java.nio.charset.StandardCharsets;
 
 public class StringFormatter implements FormatterInterface{
@@ -28,5 +30,10 @@ public class StringFormatter implements FormatterInterface{
         }
 
         return instance;
+    }
+
+    @Override
+    public String parseValue(String rawBinary) {
+        return BinaryUtils.binaryStringToString(rawBinary);
     }
 }

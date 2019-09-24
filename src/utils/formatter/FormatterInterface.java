@@ -8,4 +8,6 @@ public interface FormatterInterface
     {
         return null;
     };
+
+    String parseValue(String rawBinary);
 }
