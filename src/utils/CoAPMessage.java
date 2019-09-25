@@ -554,6 +554,7 @@ public abstract class CoAPMessage
     {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getClass()).append(" ");
+        stringBuilder.append(" Type : ").append(type);
         stringBuilder.append(" Options : ").append(" ").append(options.toString());
         stringBuilder.append(" Token : ").append(" ").append(BinaryUtils.bytesToString(token));
         stringBuilder.append(" Message ID").append(" ").append(messageId);

@@ -16,6 +16,7 @@ import utils.responses.serverErrors.InternalServerErrorResponse;
 import utils.responses.serverErrors.ProxiyingNotSupportedResponse;
 import utils.responses.successes.ChangedResponse;
 import utils.responses.successes.ContentResponse;
+import utils.responses.successes.CreatedResponse;
 import utils.responses.successes.DeletedResponse;
 
 import java.io.*;
@@ -279,7 +280,7 @@ public class ServerThread extends Thread
         //Changing the response depending on the result of the operation
         if(result == ResourceSimulator.CREATED)
         {
-            return new ChangedResponse(value);
+            return new CreatedResponse(value);
         }
 
         if(result == ResourceSimulator.CHANGED)

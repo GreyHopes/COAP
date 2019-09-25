@@ -5,7 +5,7 @@ import utils.CommunicationUtilities;
 import utils.options.UriHost;
 import utils.options.UriPath;
 import utils.options.UriPort;
-import utils.requests.GETRequest;
+import utils.requests.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,11 +25,12 @@ public class ClientMain
             InputStream in = socket.getInputStream();
             OutputStream out = socket.getOutputStream();
 
-            GETRequest test = new GETRequest();
+            CoAPRequest test = new GETRequest();
             test.addOption(new UriHost(SERVER_ADRESS));
             test.addOption(new UriPort(SERVER_PORT));
-            test.addOption(new UriPath("temperature"));
-            test.setPayload("TEST");
+            test.addOption(new UriPath("test"));
+            test.setType(CoAPMessage.CONFIRMABLE);
+            //test.setPayload("Autre valeur");
 
             CommunicationUtilities.sendMessage(out,test);
             CoAPMessage response = CommunicationUtilities.receiveMessage(in);
