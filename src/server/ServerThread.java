@@ -123,6 +123,8 @@ public class ServerThread extends Thread
 
             //Sending the response and closing the connexion
             CommunicationUtilities.sendMessage(out,response);
+
+            System.out.println("Job finished with client at "+clientSocket.getInetAddress().toString()+" terminating thread");
             clientSocket.close();
         }
         catch (UnrecognizedOptionException e)
