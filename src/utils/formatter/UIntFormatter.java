@@ -1,5 +1,8 @@
 package utils.formatter;
 
+/**
+ * Formatter for the UInt format.
+ */
 public class UIntFormatter implements FormatterInterface
 {
 
@@ -12,6 +15,7 @@ public class UIntFormatter implements FormatterInterface
 
         StringBuilder outputBuilder = new StringBuilder(Integer.toBinaryString(intValue));
 
+        //We had extras 0s to ensure that everything is of length 8n bits
         while(outputBuilder.length() % 8 != 0)
         {
             outputBuilder.insert(0,"0");
@@ -20,6 +24,11 @@ public class UIntFormatter implements FormatterInterface
         return outputBuilder.toString();
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static UIntFormatter getInstance()
     {
         if(instance == null)

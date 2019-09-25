@@ -2,20 +2,15 @@ package client;
 
 import utils.CoAPMessage;
 import utils.CommunicationUtilities;
-import utils.exceptions.MessageFormattingException;
-import utils.exceptions.MessageParsingException;
-import utils.exceptions.OptionFormatingException;
 import utils.options.UriHost;
 import utils.options.UriPath;
 import utils.options.UriPort;
 import utils.requests.GETRequest;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class ClientMain
 {

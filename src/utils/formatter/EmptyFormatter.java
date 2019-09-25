@@ -1,5 +1,8 @@
 package utils.formatter;
 
+/**
+ * Formatter for the empty format type.
+ */
 public class EmptyFormatter implements FormatterInterface
 {
     private static EmptyFormatter instance = null;
@@ -9,6 +12,11 @@ public class EmptyFormatter implements FormatterInterface
         return "";
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static EmptyFormatter getInstance()
     {
         if(instance == null)

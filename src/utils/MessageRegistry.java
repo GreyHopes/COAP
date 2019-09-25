@@ -12,11 +12,24 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Registry for message classes depending on message code
+ */
 public class MessageRegistry
 {
+    /**
+     * The Registry which maps code classes to another map of code subfield to class
+     */
     public static Map<Integer,Map<Integer,Class>> registry;
+
+    /**
+     * We use the instance pattern to ensure only one registry is instantiated
+     */
     private static MessageRegistry instance = null;
 
+    /**
+     * Instantiates a new Message registry.
+     */
     public MessageRegistry()
     {
         registry = new HashMap<>();
@@ -68,6 +81,11 @@ public class MessageRegistry
         registry.put(5,tempRegistry);
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static MessageRegistry getInstance()
     {
         if(instance == null)
@@ -78,14 +96,25 @@ public class MessageRegistry
         return instance;
     }
 
+    /**
+     * Generate message from code co ap message.
+     *
+     * @param codeClass the code class
+     * @param codeSubfield the code subfield
+     * @return the CoAP message
+     * @throws UnsupportedMessageClassException Thrown if the message class is unknown
+     * @throws MessageParsingException Thrown if an error occurred while generating message
+     */
     public CoAPMessage generateMessageFromCode(int codeClass,int codeSubfield) throws UnsupportedMessageClassException, MessageParsingException {
 
         Map<Integer,Class> messageClassRegistry = registry.get(codeClass);
+        //If the code class is unknown
         if(messageClassRegistry == null)
         {
             throw new UnsupportedMessageClassException();
         }
 
+        //If the code subfield associated to that class is unknown
         Class messageClass = messageClassRegistry.get(codeSubfield);
         if(messageClass == null)
         {

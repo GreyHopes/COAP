@@ -1,12 +1,5 @@
-import utils.*;
-import utils.exceptions.MessageFormattingException;
-import utils.exceptions.MessageParsingException;
-import utils.exceptions.OptionFormatingException;
-import utils.formatter.UIntFormatter;
-import utils.options.UriPath;
 import utils.options.UriPort;
 import utils.requests.GETRequest;
-import utils.responses.clientErrors.BadRequestResponse;
 
 public class test {
     public static void main(String[] args)
@@ -17,5 +10,14 @@ public class test {
         test.setPayload("TEST");
 
         System.out.println(test.toString());
+
+        System.out.println(9 & 1);
+        System.out.println((11 & 1) == 1 && (11 & 2) == 0);
+
+        System.out.println(9 & 2);
+        System.out.println(10 & 2);
+
+        System.out.println(11 & 1);
+        System.out.println(11 & 2);
     }
 }
