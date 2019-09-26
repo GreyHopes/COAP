@@ -75,54 +75,11 @@ public class ServerThread extends Thread
     {
         try {
             System.out.println("Treating request");
-
-            //Receiving and parsing the message
             CoAPMessage requestReceived = CommunicationUtilities.receiveMessage(in);
-            CoAPResponse response = null;
+            //Receiving and parsing the message
+            processRequest(requestReceived);
 
-            //Rejecting proxy requests because not implemented
-            if(requestReceived.getOptions().containsOneOfClass(ProxyUri.class) || requestReceived.getOptions().containsOneOfClass(ProxyScheme.class))
-            {
-                response = new ProxiyingNotSupportedResponse();
-            }
-            else
-            {
-                //Method allowed
-                if(requestHandlers.get(requestReceived.getClass()) != null)
-                {
-                    //Prevalidate the request with recurrent requirements
-                    response = preRejectRequests((CoAPRequest)requestReceived);
-
-                    //Request got through pre validation we can process it
-                    if(response == null)
-                    {
-                        //Calling the handler to generate the response
-                        response = (CoAPResponse)requestHandlers.get(requestReceived.getClass()).invoke(this,requestReceived);
-                    }
-                }
-                else
-                {
-                    //Method not allowed
-                    response = new MethodNotAllowedResponse();
-                }
-            }
-
-            //Setting the token
-            response.setToken(requestReceived.getToken());
-
-            if(requestReceived.isConfirmable())
-            {
-                //If the request is confirmable we piggyback the message id
-                response.setMessageId(requestReceived.getMessageId());
-            }
-            else
-            {
-                //Else we pass the response to NON as it is an ACK by default
-                response.setType(CoAPMessage.NON_CONFIRMABLE);
-            }
-
-            //Sending the response and closing the connexion
-            CommunicationUtilities.sendMessage(out,response);
+            //TODO Simuler Request -> Empty Ack -> Response ?
 
             System.out.println("Job finished with client at "+clientSocket.getInetAddress().toString()+" terminating thread");
             clientSocket.close();
@@ -171,6 +128,55 @@ public class ServerThread extends Thread
             System.out.println("Invocation error Must terminate thread for client at "+clientSocket.getInetAddress().toString());
             e.printStackTrace();
         }
+    }
+
+    public void processRequest(CoAPMessage requestReceived) throws InvocationTargetException, IllegalAccessException,MessageParsingException, UnrecognizedOptionException, MessageFormattingException, IOException, OptionFormattingException {
+
+        CoAPResponse response = null;
+
+        //Rejecting proxy requests because not implemented
+        if(requestReceived.getOptions().containsOneOfClass(ProxyUri.class) || requestReceived.getOptions().containsOneOfClass(ProxyScheme.class))
+        {
+            response = new ProxiyingNotSupportedResponse();
+        }
+        else
+        {
+            //Method allowed
+            if(requestHandlers.get(requestReceived.getClass()) != null)
+            {
+                //Prevalidate the request with recurrent requirements
+                response = preRejectRequests((CoAPRequest)requestReceived);
+
+                //Request got through pre validation we can process it
+                if(response == null)
+                {
+                    //Calling the handler to generate the response
+                    response = (CoAPResponse)requestHandlers.get(requestReceived.getClass()).invoke(this,requestReceived);
+                }
+            }
+            else
+            {
+                //Method not allowed
+                response = new MethodNotAllowedResponse();
+            }
+        }
+
+        //Setting the token
+        response.setToken(requestReceived.getToken());
+
+        if(requestReceived.isConfirmable())
+        {
+            //If the request is confirmable we piggyback the message id
+            response.setMessageId(requestReceived.getMessageId());
+        }
+        else
+        {
+            //Else we pass the response to NON as it is an ACK by default
+            response.setType(CoAPMessage.NON_CONFIRMABLE);
+        }
+
+        //Sending the response and closing the connexion
+        CommunicationUtilities.sendMessage(out,response);
     }
 
     /**
