@@ -58,11 +58,10 @@ public class CommunicationUtilities
      * @param in The InputStream
      * @return the received message
      * @throws IOException Thrown if an io error occurred
-     * @throws MessageFormattingException Thrown of an error was found in the message formatting
      * @throws MessageParsingException Thrown if an error occurred while parsing the message
      * @throws UnrecognizedOptionException Thrown if an unrecognized option was found and the message must be rejected
      */
-    public static CoAPMessage receiveMessage(InputStream in) throws IOException, MessageFormattingException, MessageParsingException, UnrecognizedOptionException {
+    public static CoAPMessage receiveMessage(InputStream in) throws IOException, MessageParsingException, UnrecognizedOptionException {
 
         String receivedBinaryString = receiveBinaryString(in);
         return CoAPMessage.parse(receivedBinaryString);
